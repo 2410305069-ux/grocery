@@ -1,0 +1,22 @@
+{
+  "name": "verdant-market-backend",
+  "version": "1.0.0",
+  "description": "RESTful API and persistent SQLite backend for Verdant Market grocery app",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed": "node src/scripts/seed.js",
+    "test": "NODE_ENV=test node test_api.js"
+  },
+  "keywords": ["grocery", "ecommerce", "express", "sqlite", "verdant-market"],
+  "author": "Verdant Market Team",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "morgan": "^1.10.0"
+  }
+}

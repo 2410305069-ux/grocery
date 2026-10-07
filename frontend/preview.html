@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verdant Market - Live React Application Preview</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  
+  <!-- Material Symbols Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  
+  <!-- Tailwind CSS CDN with full Material 3 Color Configuration -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#0f5238",
+            "primary-container": "#2d6a4f",
+            "on-primary": "#ffffff",
+            "on-primary-container": "#a8e7c5",
+            "primary-fixed": "#b1f0ce",
+            "primary-fixed-dim": "#95d4b3",
+            "on-primary-fixed": "#002114",
+            "on-primary-fixed-variant": "#0e5138",
+            "inverse-primary": "#95d4b3",
+
+            "secondary": "#2b694d",
+            "secondary-container": "#b0f1cc",
+            "on-secondary": "#ffffff",
+            "on-secondary-container": "#327053",
+            "secondary-fixed": "#b0f1cc",
+            "secondary-fixed-dim": "#94d4b1",
+
+            "tertiary": "#364d3c",
+            "tertiary-container": "#4d6553",
+            "on-tertiary": "#ffffff",
+            "on-tertiary-container": "#c6e1ca",
+            "tertiary-fixed": "#cee9d3",
+
+            "surface": "#f8f9fa",
+            "surface-dim": "#d9dadb",
+            "surface-bright": "#f8f9fa",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f3f4f5",
+            "surface-container": "#edeeef",
+            "surface-container-high": "#e7e8e9",
+            "surface-container-highest": "#e1e3e4",
+            "surface-variant": "#e1e3e4",
+            "surface-tint": "#2c694e",
+
+            "on-surface": "#191c1d",
+            "on-surface-variant": "#404943",
+
+            "outline": "#707973",
+            "outline-variant": "#bfc9c1",
+
+            "background": "#f8f9fa",
+            "on-background": "#191c1d",
+
+            "error": "#ba1a1a",
+            "error-container": "#ffdad6",
+            "on-error": "#ffffff",
+            "on-error-container": "#93000a",
+
+            "success": "#198754",
+            "success-container": "#d1e7dd",
+            "on-success": "#ffffff",
+            "on-success-container": "#0f5132"
+          },
+          fontFamily: {
+            "display": ["Plus Jakarta Sans", "sans-serif"],
+            "headline-lg": ["Plus Jakarta Sans", "sans-serif"],
+            "headline-md": ["Plus Jakarta Sans", "sans-serif"],
+            "headline-lg-mobile": ["Plus Jakarta Sans", "sans-serif"],
+            "body-lg": ["Inter", "sans-serif"],
+            "body-md": ["Inter", "sans-serif"],
+            "label-md": ["Inter", "sans-serif"],
+            "label-sm": ["Inter", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+  
+  <style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined' !important;
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      line-height: 1;
+      display: inline-block;
+      -webkit-font-smoothing: antialiased;
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .card-hover:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+    }
+  </style>
+
+  <!-- React 18 & Babel CDN for zero-dependency instant browser execution -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, createContext, useContext } = React;
+
+    // --- DATA ---
+    const CATEGORIES = [
+      {
+        id: "beverages",
+        name: "Beverages",
+        nameHindi: "पेय पदार्थ",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCn8lPkKJPS4miNG3f6b83hRetpXMz15ocJSPSB6nenJzZMW3noTOrXyRYPbVMW3xwIv7Flbze4e11CkR9ixWDwH9B8F8kcySsMA_ZbfY0nQwzgUopK1cpTsAJNlaEoxooOmhebLT76waPLCDiy56IO9UlXEbspWtyrkzdSqx3rSxSYdb07VIi0OclU0g7C0IvZJ0BTzbMZ6VTUi374rDUpEQHEY3qJcBPR-tGNOWuW50GJfwAPDyMc",
+        circleImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDhz6Iu2ypiy2FGnftJkIrDE8trIDIzpu8a0H2KSXgJeRMZ5GyNZS3OsWwSMoJCtomtymjwDusI2De0eQq-sYxBpw3i-9J5iZZo_K1S56IIld0igjr07XOgorUSqjD-NpE7c9cfvDkas5xRGO82YdSuhV7wtXqUQsKr5M7U56JeCPgvoNyL3eM7qlSMpjjWDXtXJ9wwb0DtlYnbHRdwGYCoteFugl0FZNpnDLFNpNbab8uCiKRtBJl2",
+        bgColor: "bg-tertiary-fixed",
+        pageRoute: "beverages"
+      },
+      {
+        id: "snacks",
+        name: "Snacks",
+        nameHindi: "स्नैक्स",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuC8F6JqWVQoD8wnfMO5KA3LN0blClz6ikTZlKVPN2fJyPyyQIpMFuokBajsBs-EvgT732ed32rWRI8bmFiQND4pVN0MVhylqI7Lsz-YUrSm-8cKw5u5Ap_SKhMhR8UrwrWkRQ_SvsiUrYck8Y3iVS32RMNeJbGI-yBgjRH-th2uiHY-kEmT30I3Z-OWvFFe4MfUyPBdxRJ5Yxaipll3xjPh0bFb9OrhyUgIQCz5AtNVH9-AZZ-KlaXG",
+        circleImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAPHcFi4E78XPYfybI0nRFxa33bhdVop1d_FpkgBm4qyKPxaWizpU0EK8OdVXaSB1ohnxcHEpGpqvjmvBWNi8VOSBqJWpkeny-isDbLiW3BCdcL37KOspQI6u0VD8tGNWRZsFGsvQf4puFqlQzgnozAVRQermUY_KfloWXyNKO4y-HUyxY2we-ywg6ZCLJGAv8V7uFSLMzCPSyDC3vrAr9fhzmHQdGwid2pnFAr_VrBRDnwWMN9vFyH",
+        bgColor: "bg-secondary-container",
+        pageRoute: "snacks"
+      },
+      {
+        id: "ice-creams",
+        name: "Ice Creams",
+        nameHindi: "आइसक्रीम",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAO2wO0xY17Dx9aeXvaRHJZ7E4MM0IArxW7k_zVZupGsdhru3MXPl7gNCAJvWiqsCeaVhs1AUhrfL3uB_turtACA-S2Z5L-JqfQMryU9BDrw0vvLxf0hsAEHdBAWC8IUwoE3I8DpgIMHM3AA1HV3-Ot7ujJ1uNzZa4Hdxgm2ehGw3u3TWmDmAKr-En0-JYgAIxLBuUpQosRqwgHKjFUdz17nySuw0-Wq2KUnq9znM3jCO96oh1Dsjtv",
+        circleImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuCvOic9OPhA6J3jLwROCmH2sjZ2intQANFRL-4NkfSN8AmUiZkyuL-PBaKu8Xcl37POspVWhK2qI1RxyZiagNCrsYBo9f3BSdiPh5eQgPA9vEgdX3Um59ZIJ9XfjWdKdk6j_b6iirPD9-907M89aWlHesiob134pz4Lu0VUQA6rAg72trYDx-w_TPPzXDf9b9AmsPzPqEnMqBVCEYV3QxeAYDeGZxgJZgjjgrB_1KI8_EBBC1g7RVfv",
+        bgColor: "bg-[#fbe2e9]",
+        pageRoute: "ice-creams"
+      },
+      {
+        id: "dairy",
+        name: "Dairy Products",
+        nameHindi: "डेयरी उत्पाद",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAva82mJSbfTtwpQJklos_g0LbAerVbLeQaBu0powtJbUoz8YP4kxTYZzZl_Bd9jWjaM3qLxQAgenNbhbIJba7Uu0YDHz3x9JwPrr3lRaMVbnwrpn-Jh_wOH72NHb8cr0xI-1davHHYXGkSoaqQtE-2x5_-Ko5H07A4ck-x-J7Q3gelJ77pGi_KuNEpzHj4jv5-M1pBip1ad_-KXPjBX4Q5WVrjnIZ-bJGAZ5GhoNPppZE7Sod6r2ET",
+        circleImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuBvcPsM2tmR5J_BheSKzMkyydjNhofHsgXYPZ9WsZZPAzFhCgr4g87GoqY8Kafthmyy1FAbLQm8Gr-vP0NIVmu4J8275WhzMtmDLa7rtcmanxsf02geaNCv1FpDAZpdjqojR4EGN9Go6VyronJjbvlOTXTlQOK4h9XLBlb6HF80Eacrmwfv_wBclxVd6W_dpj5ncnPeo7qoGGJKpqDmkKrEfIhxmcsnnrqKTd54h2ZN8JcgYKmkSVAc",
+        bgColor: "bg-[#e3f2fd]",
+        pageRoute: "home"
+      },
+      {
+        id: "daily-needs",
+        name: "Daily Necessities",
+        nameHindi: "रोज़मर्रा की ज़रूरतें",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAqPMkLwed8YmdzIbV6QmXakmhnRe2n4MerlCnB9PvzJZ6WBFXWdPz4lZaUExdAayFdlAu00G2-SrXo1-GHcyWtI2nziOJa_FH_9_b7cGnQC_7ApD-9Kz30Ucp-npVv1zSLxZP5d5dx3RgoU_lmxAEaGankpQGmcPmWvTlS_EifOVnmVfHEa87WvAowHmVKnldAxO_eDvH0wr5hq4CSaUmi-rgfVFrv3jZaHTum5BCL9D5JDk7kzhRG",
+        circleImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDirTh_7OXxAzODQC9v83EW2IWadBL-r6gJNrehOkMel9LK_PD0C0ERdIrkUkzHAEsoa432vT4Oe9snUBvkzXRqWFGLMivQmXEXiCUp1EhT7W8mmbMi3EpkKlsP-IsNJjrEz41sWvimlB5zt_qAohWo8BWiKTwDMHcOHcNH7YLLzNm9JXm3wfl98MRwVqzJ3CLutoYGYQe69uMNB1R-v9OApsRqUdvNhK6jB8ywuMyrJr0HI9BFJG0m",
+        bgColor: "bg-[#f3e5f5]",
+        pageRoute: "catalog"
+      },
+      {
+        id: "kitchen",
+        name: "Kitchen Supplies",
+        nameHindi: "रसोई का सामान",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuC35kHE8rNZ6OSU5fi8fjPmX1YuhTDzT7T4XUvTjDQpetEzOw18W06NUt53GeX3KAK56YdUP8YFI2_hos603c9hjNFXiRnzqgdiNxwC7fHGQEJvFPI4xnfjNUZ1F0IIXEuqG2001Ns8ob2Nfa7GgNJdJSgd_UYkjI53Jr_6jbC5FX3ekHdDVc2gBLnTRd92tlA2yzP08iMZksGSK9JnrWfLdLyJBGBNt_LpfOYM3gM0CsARNgSvkN5u",
+        circleImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuCwmn69kT72vHglM3pm2EfCtbgdndfs7fztmfXCQSmIfvM1tfu9yrqdjSw9TmZGvp0o3kbvXyvqVC_91k_gVOWoAFXzIKXjI8M2n4xw91-fnBquv8McCTOxxwLw6CT4ieyae4YWc8PaNXrk4qsZuOd2aEiOWmr41C6QaY6fWyF3nVwzp7b6PLLu0hqORi2h7YUMrmxdYfYMolwhCxnNaxgSNWJNgQmLABIi20SAsg2twsoWSYlau8Zy",
+        bgColor: "bg-[#fff3e0]",
+        pageRoute: "home"
+      },
+      {
+        id: "fruits-veg",
+        name: "Fruits & Veg",
+        nameHindi: "फल और सब्ज़ियाँ",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBR-5hqMVgo9WKPJdKWLRwEJBiTGQoUz8Qo8rOoz6VczXlnoBkabr6xUtDKmgTL_-xWc0rZIQMjsF1P3EdbhHBh5CLFJpnPgM_wjKBGoCidsNq4yNNoJMth9jd5oGT7HoGtJHriwdG4bZqTIvJJA2xqhUIzy42YRtzKi2Z19Z9O9MAFgVN2nZhqI4Lsn7OWcf1M9wUvhYfPTwmVz_YNu86b7YT2N6B8WFSW1I8YR7mO2P0GQqoH7qKY",
+        circleImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAbjQ6EAkalHfQRtdHWnTHIhXkKhB5E09R65DJyRUFNxL0u3wsUDxjgYAz_4P6a_BtDkgYWTe8JqYgCfacNTdRuphXXHWF4vQRS4V-np81E9lpK2vANY4FFyPDmG6JOOY49ozSruhV5q9aVfKGzA48fRQe5XYywQHP2JQZD0Mqpqm68kjDotyKeAFSkCsirniyy095m9NyvQMTO57VtpfxDZoQOa7aYCgenmt6RqcxGDXgqMFHgWEWE",
+        bgColor: "bg-[#e8f5e9]",
+        pageRoute: "catalog"
+      },
+      {
+        id: "personal-care",
+        name: "Personal Care",
+        nameHindi: "पर्सनल केयर",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDtHVkGR77g9hCZLE40wwnXC4qtl8UiXNHAt-bAMnp2b2XS1sXmSJpelGlp-WP5KZH7PHxBTYJVc9muBmTsbaxMdicg7sXOXheNQQlo6UWle6qg8VK6IK24zJzONltyN4rxZOUknaPN4vwxcW8SUj2pwVy_JGcz0cDKr3nPMg1_tFiT30RCQ33s8XX6_JruoHLFThNnMtgR1siZUpJW3DsMlNPs79A2NvDoSvsNl6PuaQTxZaRlhEu8",
+        circleImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDirTh_7OXxAzODQC9v83EW2IWadBL-r6gJNrehOkMel9LK_PD0C0ERdIrkUkzHAEsoa432vT4Oe9snUBvkzXRqWFGLMivQmXEXiCUp1EhT7W8mmbMi3EpkKlsP-IsNJjrEz41sWvimlB5zt_qAohWo8BWiKTwDMHcOHcNH7YLLzNm9JXm3wfl98MRwVqzJ3CLutoYGYQe69uMNB1R-v9OApsRqUdvNhK6jB8ywuMyrJr0HI9BFJG0m",
+        bgColor: "bg-[#e0f7fa]",
+        pageRoute: "home"
+      }
+    ];
+
+    const PRODUCTS = [
+      {
+        id: "bev-1",
+        name: "Fresh Orange Juice",
+        nameHindi: "ताज़ा संतरे का रस",
+        category: "beverages",
+        subCategory: "Juices",
+        price: 4.99,
+        priceInr: 50,
+        weight: "500ml",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuA0n7gjFHIlaMVbJ8d9PpXiBZZJcy8D7hQAOJIUztvQW5_XF37Z1OVn5MepOZABf9bjNQW5qWfvecqRCm9JhBLbk1XJGgUYoB4hddYhBysecdc7Xo6v8P2eDSFq2hszlJljM68MxEuFcpViwrWqYCFtFyWZYKxqPcwCxHFX0VXPvYXDNGs44tbkhY3XaOBTnU8K3xICbXF13hUsGlf4BOUfNOdzlMFKVhbn19-7sB4wc30r8cu1YH6_",
+        tag: "Fresh",
+        tagType: "tertiary"
+      },
+      {
+        id: "bev-2",
+        name: "Masala Chai Leaves",
+        nameHindi: "मसाला चाय पत्ती",
+        category: "beverages",
+        subCategory: "Tea & Coffee",
+        price: 3.50,
+        priceInr: 120,
+        weight: "250g",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAgqjGPdk-niG8pKZn2DKEB5D4yaU14q0UumZR3nXpf888gI0aIFU59BtHmafCyqhVynahqRDSjCWBE7f_9Yq4N1Nxn5TaFxCvsQwYG7I-BXE6RU9tcN-5dqGSOaMaYVNUpCoeAJ5e5TbCGFMoo2iPy1Kdg2xU6nSr8_-fwlzZxOrtsubw3oUeexgJzzN-_mibDeEaFEMUHbj64L98X3wCiKVjl--i6pM2cNd0GVFHcp5S2MouNAol5",
+        tag: "Aromatic",
+        tagType: "primary"
+      },
+      {
+        id: "bev-3",
+        name: "Sparkling Water",
+        nameHindi: "सोडा वाटर",
+        category: "beverages",
+        subCategory: "Soft Drinks",
+        price: 2.25,
+        priceInr: 40,
+        weight: "750ml",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCb9ArV8cz_R7SEYzvpRUfUSZtddhsxCP0w_9sR8ldbZhFc4LJ_ymB2LJ5jkh5cIfHBe-j7RpCNTorPnmdtjmz24ZLqjoRdRN6VfKMmKB-MKxcP2xUkuPZx4WrunVX6Cbuo8KYrFEuFgMok-v0Ykq0V3yDp6I4b6EOsHBswR-MZHEh5l7ql2rtuTyA_VhnNuEVHAPKwM0ID69DziuTmtfEXMZugBZKKS7jZZD2o991JpReDNx_dDC1x",
+        tag: null
+      },
+      {
+        id: "bev-4",
+        name: "Cold Brew Coffee",
+        nameHindi: "कोल्ड ब्रू कॉफी",
+        category: "beverages",
+        subCategory: "Tea & Coffee",
+        price: 3.99,
+        priceInr: 90,
+        weight: "200ml",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBTsLu9vxMfqd_lX31K_QO_DRzOXmcJFlPDPDIwmAUI7Jsnr4XV5YXt_r26cqkwzK3_dTQLfwk2KgyAgCyczXyNGWPGnsjGmIPZCg-X_NqdYf9iaKKas6Uz9YZOz--5mXSWQRFldyNbYm3W1dKg_vFk7tguy7QcCua1q0Ol2KlXC7yYlEfkPkLiL2BtHrb4vSD1TSQ0y6lPMaxKm0seYfta5oNmcWeYkYCeECKYiLKc0sfs8feMaxun",
+        tag: "Energizing",
+        tagType: "secondary"
+      },
+      {
+        id: "snack-1",
+        name: "Masala Chips",
+        nameHindi: "मसाला चिप्स",
+        category: "snacks",
+        subCategory: "Chips",
+        price: 1.50,
+        priceInr: 50,
+        weight: "150g",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDxP3LsFcfIv0s67xawLH2VRjhZYeBJxGOcplA6jOuziLrIPomKs2U5zh08mPQomBBb361-FDur_EKnNwdEgPLsJrHnzphxC0jcqol4MuQgK8kofxOxyNf6yLhUAs3pVUw5nd77mJHFazdoeTbzmR1Z5UUyPwFeYbVn3q4McHlj_jI2lpgo39rGZKBEGMX9Gr_vpTZVWA8ToQtqUEEubAfKBdNR7UhtcVphUo-ykfx6_kdSsa0gMxo4",
+        tag: "Organic",
+        tagType: "tertiary"
+      },
+      {
+        id: "snack-2",
+        name: "Dark Chocolate 70%",
+        nameHindi: "डार्क चॉकलेट",
+        category: "snacks",
+        subCategory: "Chocolates",
+        price: 3.49,
+        priceInr: 120,
+        weight: "100g",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCegxd2elkcuOFVcTdPOsjW02wFEd32czNwCEayfojrVmcJFETETKP-JR3rNqXICeKDX4sTi1g5h5qd-XH7SyjGSZJN2s7DA12rmpr4OX_I1ODRViwR-iQf92ES0skZvxEQKfZpevrCUL9FNCUAfmbu9orNg_He8K3Ui2WEHeqRsOZ3FlXE6lOWcG_vMJBM4xsWkZklHu-UyvyxVE0bKoQF9FC6JsDWX4oWcjX_Jnwm_FZGhtkI8PiM",
+        tag: "Rich Cocoa",
+        tagType: "primary"
+      },
+      {
+        id: "snack-3",
+        name: "Roasted Cashews",
+        nameHindi: "भुने हुए काजू",
+        category: "snacks",
+        subCategory: "Namkeen",
+        price: 5.99,
+        priceInr: 350,
+        weight: "250g",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBGlkkz-gXx-Ee-5Q3oCC2pKX-DSkypjGYQEDfhaUvzvD6RbOiSwxcEXOKjDm0JXRmDvkpuZAOXTAEEbyLNcg77IZ2ROCURbWElN7zJNMr1cycBVQQ5XT1ho3LJJn50Zo-hYcP86oqFVR9W_ZawGBCUdAQQkHiPcmiXo0iPqmzbUO4y9X4LusVsMn8hRsbXf15QKffrJWTbRt4EXdIwxHkxWTW_W23gk7x7CLPjfitKnpatZQJ2ASto",
+        tag: "New",
+        tagType: "secondary"
+      },
+      {
+        id: "snack-4",
+        name: "Bhujia Namkeen",
+        nameHindi: "भुजिया नमकीन",
+        category: "snacks",
+        subCategory: "Namkeen",
+        price: 2.20,
+        priceInr: 110,
+        weight: "400g",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAFQ1sIdvKxLBD9Oi80Ve7_otfnf4ZjKznbKgvANphI9wIJQw9cJ-iA9C0dW_mN_bkC3VUaP0KNBZj_cMZt9IIkjsxhKdVIMubiLNNiPfutFXD_1rmG6EZdqid1Sw1pcgXZvwJaqTt0x2RXzPt-wW3HhlCTZsYPGQhZ0JDfIxFPTC3T9pp4l5U_fV7Uocw54GgPSkA9mLxpgnSBih6a-LwYzg658IzdPb4MwwP_vDZ6tMv8hEG6EXpc",
+        tag: "Authentic",
+        tagType: "primary"
+      },
+      {
+        id: "ice-1",
+        name: "Vanilla Bean Tub",
+        nameHindi: "वैनिला बीन टब",
+        category: "ice-creams",
+        subCategory: "Tubs",
+        price: 6.50,
+        priceInr: 120,
+        weight: "500ml",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDSi70PopBZoSdGz2-UAKbW7DXKXUjyjIfoxMbFXDGKWbyPyiVBXDz6bvsjcUB_NsvJId2CwbWsMMmOfplQzR1SqX40oS7OF460XBJsVxyCjy31QsNoCasvSs3zfXQSusZWRBYnaMKi_ZK-i_wKDYYu-jwYaji0JLS9UVRq5YUGYjO3wthWq8XFG_k6gn1Z2ZdF3dKlT3rIMKtpZuHa0RBFa0sXpNTt7JP4JGZSdBR3rcMen8Bc-ydh",
+        tag: "Bestseller",
+        tagType: "primary"
+      },
+      {
+        id: "ess-1",
+        name: "Pure Desi Ghee",
+        nameHindi: "शुद्ध देसी घी",
+        category: "dairy",
+        subCategory: "Ghee",
+        price: 12.99,
+        priceInr: 650,
+        weight: "500ml",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBLBEvoVGu3C0g9UHJoHRaj5zEhww8oH2BZyP_B9DY6iyA82oV3ZTW2IeTZOyf77Bas27tL2VPAPrs39Qk3czbe4BuiuyzBFmEK0AkIAHKNmjHMA8FyUAMOvVhcn-M5nBbS8oANKGDNqxxcodJQSe4KDTpjMEMiXHptlpiM3BFSYlddScHxhFJ_sjgWVisCWlhxK8KQxWCIJ6rydtZTiNlC7LFFNuu52GMfKBPfYPJy5wYUnt1tF6ZX",
+        tag: "Organic",
+        tagType: "tertiary"
+      },
+      {
+        id: "ess-2",
+        name: "Fresh Tomatoes",
+        nameHindi: "ताज़ा टमाटर",
+        category: "fruits-veg",
+        subCategory: "Vegetables",
+        price: 3.50,
+        priceInr: 40,
+        weight: "1 kg",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAbjQ6EAkalHfQRtdHWnTHIhXkKhB5E09R65DJyRUFNxL0u3wsUDxjgYAz_4P6a_BtDkgYWTe8JqYgCfacNTdRuphXXHWF4vQRS4V-np81E9lpK2vANY4FFyPDmG6JOOY49ozSruhV5q9aVfKGzA48fRQe5XYywQHP2JQZD0Mqpqm68kjDotyKeAFSkCsirniyy095m9NyvQMTO57VtpfxDZoQOa7aYCgenmt6RqcxGDXgqMFHgWEWE",
+        tag: "Farm Fresh",
+        tagType: "secondary"
+      },
+      {
+        id: "ess-3",
+        name: "Basmati Rice Premium",
+        nameHindi: "प्रीमियम बासमती चावल",
+        category: "daily-needs",
+        subCategory: "Grains",
+        price: 18.00,
+        priceInr: 450,
+        weight: "5 kg",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDlt0yYRl7GZCv79Vf4ZTJIABeDic7SRfKK_98-ndeNbTfmoTmeg0CmnJXN_kxq4ipZ2nXhkUu3kMcu4GXIWXo7vnZkliPfoN0Bmn52kiwM5VdyhW_1UlaoeKXb9ptBvLSQEWgl2MKkNMyldIbu5gF9Ruu1Zd8SH8GyLdk4fk1pjTyFLELFD2MriNdxF3iLSo0X8xX7BVpAq3Qs9iW_kg4v11R1t-oHHikAOd438cGbiJCNmIUCGhQu",
+        tag: "Sale",
+        tagType: "error"
+      }
+    ];
+
+    // --- CONTEXT ---
+    const CartContext = createContext();
+
+    const CartProvider = ({ children }) => {
+      const [cartItems, setCartItems] = useState([
+        {
+          id: "bev-1",
+          name: "Fresh Orange Juice",
+          nameHindi: "ताज़ा संतरे का रस",
+          price: 4.99,
+          priceInr: 50,
+          weight: "500ml",
+          image: PRODUCTS[0].image,
+          quantity: 1
+        },
+        {
+          id: "snack-1",
+          name: "Masala Chips",
+          nameHindi: "मसाला चिप्स",
+          price: 1.50,
+          priceInr: 50,
+          weight: "150g",
+          image: PRODUCTS[4].image,
+          quantity: 2
+        },
+        {
+          id: "ice-1",
+          name: "Vanilla Bean Tub",
+          nameHindi: "वैनिला बीन टब",
+          price: 6.50,
+          priceInr: 120,
+          weight: "500ml",
+          image: PRODUCTS[8].image,
+          quantity: 1
+        }
+      ]);
+      const [toastMessage, setToastMessage] = useState(null);
+      const [discountPercent, setDiscountPercent] = useState(0);
+
+      const showToast = (msg) => {
+        setToastMessage(msg);
+        setTimeout(() => setToastMessage(null), 2500);
+      };
+
+      const addToCart = (product) => {
+        setCartItems((prev) => {
+          const exists = prev.find((item) => item.id === product.id);
+          if (exists) {
+            showToast(`Added another ${product.name}`);
+            return prev.map((item) =>
+              item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+            );
+          }
+          showToast(`Added ${product.name} to cart`);
+          return [...prev, { ...product, quantity: 1 }];
+        });
+      };
+
+      const updateQuantity = (id, delta) => {
+        setCartItems((prev) =>
+          prev
+            .map((item) =>
+              item.id === id ? { ...item, quantity: item.quantity + delta } : item
+            )
+            .filter((item) => item.quantity > 0)
+        );
+      };
+
+      const removeFromCart = (id) => {
+        setCartItems((prev) => prev.filter((item) => item.id !== id));
+        showToast("Item removed");
+      };
+
+      const applyCoupon = (code) => {
+        if (code.toUpperCase() === "VERDANT20" || code.toUpperCase() === "PURE20") {
+          setDiscountPercent(20);
+          showToast("Coupon Applied: 20% OFF!");
+          return { success: true, message: "Coupon applied! 20% off." };
+        }
+        showToast("Invalid promo code");
+        return { success: false, message: "Invalid coupon code. Try VERDANT20" };
+      };
+
+      const totalItemsCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+      const subtotalInr = cartItems.reduce((acc, item) => acc + item.priceInr * item.quantity, 0);
+      const deliveryFeeInr = subtotalInr > 200 || subtotalInr === 0 ? 0 : 40;
+      const taxesInr = subtotalInr > 0 ? 15 : 0;
+      const discountAmountInr = Math.round((subtotalInr * discountPercent) / 100);
+      const grandTotalInr = subtotalInr - discountAmountInr + deliveryFeeInr + taxesInr;
+
+      return (
+        <CartContext.Provider
+          value={{
+            cartItems,
+            totalItemsCount,
+            subtotalInr,
+            deliveryFeeInr,
+            taxesInr,
+            discountPercent,
+            discountAmountInr,
+            grandTotalInr,
+            toastMessage,
+            addToCart,
+            updateQuantity,
+            removeFromCart,
+            applyCoupon,
+            clearCart: () => setCartItems([])
+          }}
+        >
+          {children}
+        </CartContext.Provider>
+      );
+    };
+
+    // --- REUSABLE COMPONENTS ---
+    const ProductCard = ({ product, variant = "grid" }) => {
+      const { cartItems, addToCart, updateQuantity } = useContext(CartContext);
+      const inCart = cartItems.find((i) => i.id === product.id);
+      const qty = inCart ? inCart.quantity : 0;
+
+      if (variant === "compact") {
+        return (
+          <div className="snap-start shrink-0 w-[145px] flex flex-col bg-surface-container-lowest border border-outline-variant/60 rounded-xl overflow-hidden hover:border-primary transition-all duration-200 group card-hover shadow-xs">
+            <div className="h-[120px] bg-surface relative p-2 flex items-center justify-center">
+              {product.tag && (
+                <div className="absolute top-2 left-2 bg-secondary-container text-on-secondary-container text-[10px] font-bold px-1.5 py-0.5 rounded">
+                  {product.tag}
+                </div>
+              )}
+              <img src={product.image} alt={product.name} className="max-h-full max-w-full object-contain mix-blend-multiply" />
+            </div>
+            <div className="p-2.5 flex flex-col flex-1">
+              <h4 className="text-xs font-semibold text-on-surface line-clamp-1">{product.name}</h4>
+              <p className="text-[11px] text-on-surface-variant mb-2">{product.weight}</p>
+              <div className="mt-auto flex justify-between items-center">
+                <span className="font-bold text-xs text-primary">₹{product.priceInr}</span>
+                {qty === 0 ? (
+                  <button onClick={() => addToCart(product)} className="w-7 h-7 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center hover:bg-secondary hover:text-on-secondary transition-colors">
+                    <span className="material-symbols-outlined text-[16px]">add</span>
+                  </button>
+                ) : (
+                  <div className="flex items-center bg-surface-container rounded-full p-0.5">
+                    <button onClick={() => updateQuantity(product.id, -1)} className="w-5 h-5 flex items-center justify-center text-xs">-</button>
+                    <span className="text-[11px] font-bold px-1">{qty}</span>
+                    <button onClick={() => updateQuantity(product.id, 1)} className="w-5 h-5 flex items-center justify-center text-xs">+</button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="bg-surface-container-lowest border border-outline-variant/60 rounded-xl overflow-hidden flex flex-col hover:border-primary transition-all duration-200 group card-hover shadow-xs">
+          <div className="aspect-square bg-surface-container-low p-4 relative flex items-center justify-center overflow-hidden">
+            {product.tag && (
+              <span className="absolute top-2 left-2 text-[10px] px-2 py-0.5 rounded-full font-bold bg-secondary-container text-on-secondary-container">
+                {product.tag}
+              </span>
+            )}
+            <img src={product.image} alt={product.name} className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform mix-blend-multiply" />
+          </div>
+          <div className="p-3 flex flex-col flex-grow justify-between gap-1">
+            <div>
+              <h3 className="text-sm font-semibold text-on-surface line-clamp-1">{product.name}</h3>
+              <p className="text-xs text-on-surface-variant truncate">{product.nameHindi}</p>
+              <p className="text-xs text-outline mt-0.5">{product.weight}</p>
+            </div>
+            <div className="mt-3 flex items-center justify-between">
+              <span className="text-base font-bold text-primary">₹{product.priceInr}</span>
+              {qty === 0 ? (
+                <button onClick={() => addToCart(product)} className="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center hover:bg-secondary hover:text-on-secondary transition-colors">
+                  <span className="material-symbols-outlined text-[18px]">add</span>
+                </button>
+              ) : (
+                <div className="flex items-center bg-surface-container rounded-full p-1">
+                  <button onClick={() => updateQuantity(product.id, -1)} className="w-5 h-5 flex items-center justify-center text-xs">-</button>
+                  <span className="text-xs font-bold px-1.5">{qty}</span>
+                  <button onClick={() => updateQuantity(product.id, 1)} className="w-5 h-5 flex items-center justify-center text-xs">+</button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // --- MAIN APP ---
+    function App() {
+      const [activePage, setActivePage] = useState("landing");
+      const [searchQuery, setSearchQuery] = useState("");
+      const [selectedFilter, setSelectedFilter] = useState("All");
+      const [couponInput, setCouponInput] = useState("");
+      const [orderDone, setOrderDone] = useState(false);
+
+      const {
+        cartItems,
+        totalItemsCount,
+        subtotalInr,
+        deliveryFeeInr,
+        taxesInr,
+        discountPercent,
+        discountAmountInr,
+        grandTotalInr,
+        toastMessage,
+        updateQuantity,
+        removeFromCart,
+        applyCoupon,
+        clearCart
+      } = useContext(CartContext);
+
+      const handleNav = (p) => {
+        setActivePage(p);
+        setSearchQuery("");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      };
+
+      return (
+        <div className="min-h-screen bg-surface flex flex-col font-body-md text-on-surface">
+          {/* Header */}
+          <header className="fixed top-0 left-0 w-full z-50 bg-surface/95 backdrop-blur-md border-b border-outline-variant/30">
+            <div className="max-w-[1200px] w-full mx-auto px-4 md:px-6 py-2.5 flex items-center justify-between gap-4 h-16">
+              <div className="flex items-center gap-4 cursor-pointer" onClick={() => handleNav("landing")}>
+                <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-on-primary font-bold text-lg">V</div>
+                <div>
+                  <span className="font-headline-lg text-lg md:text-xl font-bold text-primary">Verdant Market</span>
+                  <span className="hidden sm:block text-[10px] text-on-surface-variant">ताज़ा किराना, सुपरफास्ट डिलीवरी</span>
+                </div>
+              </div>
+
+              {/* Navigation Links */}
+              <nav className="hidden md:flex items-center gap-4 text-xs font-semibold">
+                <button onClick={() => handleNav("landing")} className={`pb-1 border-b-2 ${activePage === "landing" ? "border-primary text-primary" : "border-transparent text-on-surface-variant"}`}>Storefront</button>
+                <button onClick={() => handleNav("home")} className={`pb-1 border-b-2 ${activePage === "home" ? "border-primary text-primary" : "border-transparent text-on-surface-variant"}`}>App Feed</button>
+                <button onClick={() => handleNav("catalog")} className={`pb-1 border-b-2 ${activePage === "catalog" ? "border-primary text-primary" : "border-transparent text-on-surface-variant"}`}>Catalog</button>
+                <button onClick={() => handleNav("beverages")} className={`pb-1 border-b-2 ${activePage === "beverages" ? "border-primary text-primary" : "border-transparent text-on-surface-variant"}`}>Beverages</button>
+                <button onClick={() => handleNav("snacks")} className={`pb-1 border-b-2 ${activePage === "snacks" ? "border-primary text-primary" : "border-transparent text-on-surface-variant"}`}>Snacks</button>
+                <button onClick={() => handleNav("ice-creams")} className={`pb-1 border-b-2 ${activePage === "ice-creams" ? "border-primary text-primary" : "border-transparent text-on-surface-variant"}`}>Ice Creams</button>
+              </nav>
+
+              {/* Cart CTA */}
+              <button onClick={() => handleNav("cart")} className="p-2 rounded-full relative bg-secondary-container text-on-secondary-container flex items-center gap-1.5 px-3">
+                <span className="material-symbols-outlined text-[20px]">shopping_cart</span>
+                <span className="text-xs font-bold">{totalItemsCount}</span>
+              </button>
+            </div>
+          </header>
+
+          {/* Toast */}
+          {toastMessage && (
+            <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-primary text-on-primary px-4 py-2 rounded-full shadow-lg text-xs font-semibold flex items-center gap-2">
+              <span className="material-symbols-outlined text-sm">check_circle</span>
+              <span>{toastMessage}</span>
+            </div>
+          )}
+
+          {/* Body Content */}
+          <main className="flex-1 pt-20 pb-20 px-4 md:px-6 max-w-[1200px] w-full mx-auto">
+            {/* Page 1: Home Feed */}
+            {activePage === "home" && (
+              <div className="max-w-screen-md mx-auto flex flex-col gap-6">
+                <div className="relative rounded-2xl overflow-hidden h-44 flex items-center bg-surface-container-low border border-outline-variant/30">
+                  <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLnpgVznwtp-X86zS5q8znnahyQqtq3Mv7d-Y-L6IABd6m5nw3Dn5RyrdYe9Ja3QXyIn6GQQPad51Pyc6nKxm477rSn-VeK5bx8QNaBKdzw21HquCWVPZAS3BNnm2ZyXfpnuFPPwSzYXWxmnuMtCP4YEn3VjPW3mSdXcnY3zXU8FtwarEEMJoNLzfvSvOv0Kx0lMOgkz-WIOSZUgDwFYC_KtQ1oU5Pd5xJSQbIayZxEPu8owtiwVbC" className="absolute inset-0 w-full h-full object-cover" />
+                  <div className="relative z-10 px-6 max-w-[65%] bg-gradient-to-r from-surface to-transparent py-4 rounded-xl">
+                    <h2 className="font-headline-md text-xl font-bold text-on-surface">Fresh Summer Drinks</h2>
+                    <p className="text-xs text-on-surface-variant mb-2">Stay cool and refreshed.</p>
+                    <button onClick={() => handleNav("beverages")} className="bg-primary text-on-primary text-xs font-semibold py-1.5 px-4 rounded-full">Shop Now</button>
+                  </div>
+                </div>
+
+                {/* Categories Horizontal */}
+                <section>
+                  <h3 className="font-headline-md text-base font-bold mb-3">Categories / श्रेणियाँ</h3>
+                  <div className="flex overflow-x-auto no-scrollbar gap-4 pb-2">
+                    {CATEGORIES.map((c) => (
+                      <div key={c.id} onClick={() => handleNav(c.pageRoute)} className="flex flex-col items-center gap-1.5 cursor-pointer shrink-0 w-[72px] text-center">
+                        <div className="w-16 h-16 rounded-full bg-surface-container-lowest border border-outline-variant/60 overflow-hidden">
+                          <img src={c.circleImage || c.image} className="w-full h-full object-cover" />
+                        </div>
+                        <span className="text-[11px] font-medium leading-tight">{c.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                {/* Popular Snacks */}
+                <section>
+                  <h3 className="font-headline-md text-base font-bold mb-3">Popular Snacks / लोकप्रिय स्नैक्स</h3>
+                  <div className="flex overflow-x-auto no-scrollbar gap-3 pb-2">
+                    {PRODUCTS.filter(p => p.category === "snacks").map(p => (
+                      <ProductCard key={p.id} product={p} variant="compact" />
+                    ))}
+                  </div>
+                </section>
+              </div>
+            )}
+
+            {/* Page 2: Storefront Landing */}
+            {activePage === "landing" && (
+              <div className="flex flex-col gap-10">
+                <section className="relative rounded-3xl overflow-hidden min-h-[360px] flex items-center bg-surface-container-low border border-outline-variant/30 p-8 md:p-12">
+                  <div className="max-w-xl flex flex-col gap-3 relative z-10">
+                    <span className="px-3 py-1 bg-secondary-container text-on-secondary-container font-bold text-xs rounded-full w-fit">⚡ 30-Minute Fast Delivery</span>
+                    <h1 className="font-display text-3xl md:text-5xl font-extrabold text-on-surface">Fresh Groceries, Delivered to Your Door<br/><span className="text-primary text-2xl font-bold">ताज़ा किराना, आपके दरवाज़े तक</span></h1>
+                    <p className="text-sm text-on-surface-variant">Discover premium quality Indian groceries, farm fresh produce, and daily essentials.</p>
+                    <button onClick={() => handleNav("catalog")} className="mt-2 bg-primary text-on-primary px-6 py-3 rounded-full font-bold text-xs w-fit">Shop Now / अभी खरीदें →</button>
+                  </div>
+                </section>
+
+                {/* Category 8-Grid */}
+                <section>
+                  <h2 className="font-headline-md text-xl md:text-2xl font-bold mb-4">Shop by Category / श्रेणी के अनुसार खरीदारी करें</h2>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
+                    {CATEGORIES.map(c => (
+                      <div key={c.id} onClick={() => handleNav(c.pageRoute)} className="flex flex-col items-center gap-2 group cursor-pointer">
+                        <div className={`w-full aspect-square rounded-2xl ${c.bgColor} flex items-center justify-center p-3 border border-outline-variant/30 hover:border-primary transition-all`}>
+                          <img src={c.image} className="w-full h-full object-contain" />
+                        </div>
+                        <span className="text-xs font-bold text-center">{c.name}</span>
+                        <span className="text-[10px] text-on-surface-variant -mt-1">{c.nameHindi}</span>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              </div>
+            )}
+
+            {/* Page 3: Catalog */}
+            {activePage === "catalog" && (
+              <div className="max-w-screen-md mx-auto flex flex-col gap-6">
+                <h1 className="font-headline-md text-2xl font-bold text-on-surface">Popular Essentials | लोकप्रिय उत्पाद</h1>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  {PRODUCTS.map(p => (
+                    <ProductCard key={p.id} product={p} variant="grid" />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Page 4: Ice Creams */}
+            {activePage === "ice-creams" && (
+              <div className="max-w-screen-md mx-auto flex flex-col gap-6">
+                <div>
+                  <h1 className="font-headline-md text-2xl font-bold text-on-surface">Ice Creams / आइसक्रीम</h1>
+                  <p className="text-xs text-on-surface-variant">Frozen Treats & Desserts / फ्रोजन ट्रीट्स और डेसर्ट</p>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  {PRODUCTS.filter(p => p.category === "ice-creams").map(p => (
+                    <ProductCard key={p.id} product={p} variant="grid" />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Page 5: Beverages */}
+            {activePage === "beverages" && (
+              <div className="max-w-screen-md mx-auto flex flex-col gap-6">
+                <div>
+                  <h1 className="font-headline-md text-2xl font-bold text-on-surface">Beverages / पेय पदार्थ</h1>
+                  <p className="text-xs text-on-surface-variant">Refreshing drinks for every mood / हर मूड के लिए ताज़ा पेय</p>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  {PRODUCTS.filter(p => p.category === "beverages").map(p => (
+                    <ProductCard key={p.id} product={p} variant="grid" />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Page 6: Snacks */}
+            {activePage === "snacks" && (
+              <div className="max-w-screen-md mx-auto flex flex-col gap-6">
+                <div>
+                  <h1 className="font-headline-md text-2xl font-bold text-on-surface">Snacks / स्नैक्स</h1>
+                  <p className="text-xs text-on-surface-variant">Authentic Indian Namkeen, Chips & Chocolates</p>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  {PRODUCTS.filter(p => p.category === "snacks").map(p => (
+                    <ProductCard key={p.id} product={p} variant="grid" />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Page 7: My Cart */}
+            {activePage === "cart" && (
+              <div className="max-w-screen-md mx-auto flex flex-col gap-6">
+                {orderDone ? (
+                  <div className="text-center py-16 flex flex-col items-center gap-3">
+                    <span className="material-symbols-outlined text-6xl text-primary">verified</span>
+                    <h2 className="text-2xl font-bold">Order Placed Successfully!</h2>
+                    <p className="text-xs text-on-surface-variant">Your order will arrive in 25-30 minutes.</p>
+                    <button onClick={() => { clearCart(); setOrderDone(false); handleNav("landing"); }} className="bg-primary text-on-primary px-6 py-2.5 rounded-full text-xs font-bold mt-3">Back to Store</button>
+                  </div>
+                ) : (
+                  <>
+                    <h1 className="font-headline-md text-2xl font-bold text-primary">My Cart / मेरी टोकरी ({cartItems.length})</h1>
+                    <div className="flex flex-col gap-3">
+                      {cartItems.map(item => (
+                        <div key={item.id} className="flex items-center gap-3 bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/60">
+                          <img src={item.image} className="w-16 h-16 object-contain mix-blend-multiply" />
+                          <div className="flex-1">
+                            <h3 className="text-xs font-bold">{item.name}</h3>
+                            <p className="text-[11px] text-on-surface-variant">{item.nameHindi} • {item.weight}</p>
+                            <span className="text-xs font-bold text-primary">₹{item.priceInr}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <button onClick={() => updateQuantity(item.id, -1)} className="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-xs">-</button>
+                            <span className="text-xs font-bold">{item.quantity}</span>
+                            <button onClick={() => updateQuantity(item.id, 1)} className="w-6 h-6 rounded-full bg-secondary text-on-secondary flex items-center justify-center text-xs">+</button>
+                            <button onClick={() => removeFromCart(item.id)} className="text-error ml-2 text-xs">✕</button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Coupon Box */}
+                    <div className="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/60 flex gap-2">
+                      <input type="text" value={couponInput} onChange={(e) => setCouponInput(e.target.value)} placeholder="Enter code 'VERDANT20'" className="flex-1 bg-surface-container-low border border-outline-variant rounded-full px-4 text-xs h-10 outline-none" />
+                      <button onClick={() => applyCoupon(couponInput)} className="bg-secondary-container text-on-secondary-container px-4 rounded-full text-xs font-bold">Apply</button>
+                    </div>
+
+                    {/* Bill Summary */}
+                    <div className="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/60 flex flex-col gap-2 text-xs">
+                      <div className="flex justify-between"><span>Item Total</span><span>₹{subtotalInr}</span></div>
+                      {discountPercent > 0 && <div className="flex justify-between text-primary font-bold"><span>Discount (20%)</span><span>-₹{discountAmountInr}</span></div>}
+                      <div className="flex justify-between"><span>Delivery Fee</span><span>{deliveryFeeInr === 0 ? "FREE" : "₹40"}</span></div>
+                      <div className="flex justify-between"><span>Taxes</span><span>₹{taxesInr}</span></div>
+                      <div className="border-t pt-2 flex justify-between font-bold text-base text-primary"><span>Grand Total</span><span>₹{grandTotalInr}</span></div>
+                    </div>
+
+                    <button onClick={() => setOrderDone(true)} className="w-full bg-primary text-on-primary py-3.5 rounded-full font-bold text-sm shadow-md">Proceed to Checkout • ₹{grandTotalInr}</button>
+                  </>
+                )}
+              </div>
+            )}
+          </main>
+
+          {/* Bottom Bar */}
+          <nav className="fixed bottom-0 left-0 w-full z-50 md:hidden bg-surface/95 backdrop-blur-md border-t border-outline-variant/30 flex justify-around py-2">
+            <button onClick={() => handleNav("home")} className={`text-xs flex flex-col items-center ${activePage === "home" ? "text-primary font-bold" : "text-on-surface-variant"}`}>
+              <span className="material-symbols-outlined">home</span>
+              <span>Home</span>
+            </button>
+            <button onClick={() => handleNav("landing")} className={`text-xs flex flex-col items-center ${activePage === "landing" ? "text-primary font-bold" : "text-on-surface-variant"}`}>
+              <span className="material-symbols-outlined">storefront</span>
+              <span>Store</span>
+            </button>
+            <button onClick={() => handleNav("catalog")} className={`text-xs flex flex-col items-center ${activePage === "catalog" ? "text-primary font-bold" : "text-on-surface-variant"}`}>
+              <span className="material-symbols-outlined">grid_view</span>
+              <span>Catalog</span>
+            </button>
+            <button onClick={() => handleNav("cart")} className={`text-xs flex flex-col items-center relative ${activePage === "cart" ? "text-primary font-bold" : "text-on-surface-variant"}`}>
+              <span className="material-symbols-outlined">shopping_cart</span>
+              <span>Cart ({totalItemsCount})</span>
+            </button>
+          </nav>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(
+      <CartProvider>
+        <App />
+      </CartProvider>
+    );
+  </script>
+</body>
+</html>
